@@ -1,0 +1,3 @@
+# Streamlist
+
+Streamlist é uma aplicação desenvolvida para simular cadastros pessoais de forma prática e intuitiva. Ela interage diretamente com um banco de dados, permitindo o armazenamento e a consulta dos dados cadastrados. Além disso, o Streamlist foi projetado para ser acessível tanto em computadores quanto em dispositivos móveis, garantindo flexibilidade e facilidade de uso em qualquer lugar.
