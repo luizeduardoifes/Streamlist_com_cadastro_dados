@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from banco import carregar_dados
 from repo.pessoa_repo import *
@@ -25,8 +26,11 @@ if menu == "Cadastro de Pessoas":
                 st.error("O nome não pode ser vazio.")
             
             elif nome in carregar_dados()['nome'].values:
-                st.error("Já existe uma pessoa cadastrada com esse nome.") 
+                st.error("Já existe uma pessoa cadastrada com esse nome.")
             
+            elif idade < 0 or altura < 0.0 or peso < 0.0:
+                st.error("Idade, altura e peso devem ser valores positivos.")
+             
             else:
                 pessoa = Pessoa(nome=nome, idade=idade, altura=altura, peso=peso)
                 inserir_pessoa(pessoa)
@@ -36,6 +40,36 @@ elif menu == "consulta de Pessoas":
     st.title("Consulta de Pessoas")
     df = carregar_dados()
     st.dataframe(df)
+    
+elif menu == "Atualização de Pessoas":
+    st.title("Atualização de Pessoas")
+    df = carregar_dados()
+    pessoa_id = st.selectbox("Selecione a pessoa para atualizar", df['id'])
+    if pessoa_id:
+        pessoa = selecionar_pessoa(pessoa_id)
+        if pessoa:
+            with st.form("atualizacao_pessoa"):
+                novo_nome = st.text_input("Novo Nome", value=pessoa.nome)
+                nova_idade = st.number_input("Nova Idade", min_value=0, max_value=120, value=pessoa.idade)
+                nova_altura = st.number_input("Nova Altura (em metros)", min_value=0.0, format="%.2f", value=pessoa.altura)
+                novo_peso = st.number_input("Novo Peso (em kg)", min_value=0.0, format="%.2f", value=pessoa.peso)
+                if st.form_submit_button("Atualizar"):
+                    if novo_nome == pessoa.nome and nova_idade == pessoa.idade and nova_altura == pessoa.altura and novo_peso == pessoa.peso:
+                        st.warning("Nenhum dado foi alterado.")
+                    else:
+                        pessoa.nome = novo_nome
+                        pessoa.idade = nova_idade
+                        pessoa.altura = nova_altura
+                        pessoa.peso = novo_peso
+                        pessoa.id = pessoa_id
+                        if atualizar_pessoa(pessoa):
+                            st.success(f"Pessoa {pessoa.nome} atualizada com sucesso!")
+                        else:
+                            st.error("Erro ao atualizar a pessoa. Verifique os dados e tente novamente.")
+                            
+
+    
+
 
 
     
